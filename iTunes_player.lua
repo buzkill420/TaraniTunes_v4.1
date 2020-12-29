@@ -183,24 +183,32 @@ local function background()
 -- Previous song
 	if getValue(prevSongSwitchId) > 0 then
 		if not prevSongSwitchPressed then
-		if getValue(randomSongSwitchId) > 0 then
-			playingSong = math.random (1, #playlist)
-			model.setTimer(2,{value=0})
-			songChanged = true
-			screenUpdate = true
-			nextScreenUpdate = true	
-		 else
-		 	model.setTimer(2,{value=0})
-			prevSongSwitchPressed = true
-			nextScreenUpdate = true
-			songChanged = true
-			screenUpdate = true
-			if playingSong == 1 then
-				playingSong = #playlist
+			if getValue(randomSongSwitchId) > 0 then
+				--playingSong = math.random (1, #playlist)    --removed to restart current song VS selecting a new random song
+				model.setTimer(2,{value=0})
+				songChanged = true
+				screenUpdate = true
+				nextScreenUpdate = true	
 			else
-				playingSong = playingSong - 1
+				if model.getTimer(2).value < 1 then
+					model.setTimer(2,{value=0})
+					prevSongSwitchPressed = true
+					nextScreenUpdate = true
+					songChanged = true
+					screenUpdate = true
+					if playingSong == 1 then
+						playingSong = #playlist
+					else
+						playingSong = playingSong - 1
+					end
+				else 
+					model.setTimer(2,{value=0})
+					prevSongSwitchPressed = true
+					nextScreenUpdate = true
+					songChanged = true
+					screenUpdate = true
+				end
 			end
-		end
 		end
 	else
 		prevSongSwitchPressed = false
